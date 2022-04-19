@@ -10,6 +10,7 @@ import re
 import json
 import sys
 import time
+import requests
 from urllib.parse import quote
 
 import requests
@@ -348,8 +349,7 @@ def push_wx(_sckey, desp=""):
             print(f"[{now}] 推送成功。")
         else:
             print(f"[{now}] 推送失败：{json_data['errno']}({json_data['errmsg']})")
-
-
+            
 def push_server(_sckey, desp=""):
     """
     推送消息到微信
@@ -377,7 +377,7 @@ def push_pushplus(token, content=""):
     推送消息到pushplus
     """
     if token == '':
-        print("[注意] 未提供token，不进行pushplus推送！")
+        print("[注意] 未提供token，不进行bark推送！")
     else:
         server_url = "http://www.pushplus.plus/send"
         params = {
@@ -393,6 +393,16 @@ def push_pushplus(token, content=""):
             print(f"[{now}] 推送成功。")
         else:
             print(f"[{now}] 推送失败：{json_data['code']}({json_data['message']})")
+            
+def push_bark(token, content=""):
+    """
+    推送消息到bark
+    """
+    if token == '':
+        print("[注意] 未提供token，不进行bark推送！")
+    else:
+        api = "https://api.day.app/%s/步数提醒/%s?" % (token, content)
+        send = requests.get(url=api)
 
 
 def push_tg(token, chat_id, desp=""):
@@ -542,6 +552,15 @@ class ToPush:
             print('pushplus token错误')
         else:
             push_pushplus(self.pkey, self.push_msg)
+            
+    def to_bark(self):
+        """
+        接口
+        """
+        if self.pkey == '':
+            print('bark token错误')
+        else:
+            push_bark(self.pkey, self.push_msg)
 
     @staticmethod
     def no_push():
@@ -590,6 +609,7 @@ if __name__ == "__main__":
             'tg': to_push.to_push_tg,
             'qwx': to_push.to_wxpush,
             'pp': to_push.to_push_pushplus,
+            'bark': to_push.to_bark,
             'off': to_push.no_push
         }
         try:
