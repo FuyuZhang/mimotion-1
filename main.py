@@ -377,7 +377,7 @@ def push_pushplus(token, content=""):
     推送消息到pushplus
     """
     if token == '':
-        print("[注意] 未提供token，不进行bark推送！")
+        print("[注意] 未提供token，不进行pushplus推送！")
     else:
         server_url = "http://www.pushplus.plus/send"
         params = {
